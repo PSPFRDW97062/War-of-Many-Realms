@@ -59,7 +59,7 @@ class Hero:
                 self.energy += 20
                 return f"{self.name} dealt {self.attack} {self.base_attack_stat} damage to {enemy.name}. {enemy.name}'s health is {enemy.health} \n"
 
-    def rank1_skill(self, enemies, status = None):
+    def rank_1_skill(self, enemies, status = None):
         if self.permissions == "dead":
             print(f"Stop it.")
             return None
@@ -84,7 +84,7 @@ class Hero:
                             f"{enemy.name} only has {enemy.health} health left.")
                         return f"{self.name} used their green skill {self.green_skill_info['name']} and dealt {self.attack + 500} damage to {enemy.name}. {enemy.name}'s health is {enemy.health}."
 
-    def rank2_skill(self, enemy):
+    def rank_2_skill(self, enemy):
         if self.permissions == "dead":
             print(f"Stop it.")
             return None
