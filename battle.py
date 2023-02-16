@@ -2,8 +2,6 @@ from heros import *
 from time import sleep as wait
 from AI import AI
 
-
-
 DEBUG = True
 if DEBUG:
     Froggy = Hero("Froggy", 2, 1000, 250, level=1, base_attack_stat=1,
@@ -11,12 +9,16 @@ if DEBUG:
 
     Sludge = Hero("Sludge", 2, 1000, 250, level=1, base_attack_stat=2,
                   green_skill_info={"name": "Flower of the Earth", "type": "self heal"})
-    Froggladior = Hero("Froggladior", 2, 1500, 250, level=1, green_skill_info={"name": "Downfall", "type": "self heal"})
+    Froggladior = Hero("Froggladior", 2, 1500, 350, level=1, green_skill_info={"name": "Downfall", "type": "self heal"})
     Frogglar = Hero("asdf", 2, 1500, 250, level=1, green_skill_info={"name": "Downfall", "type": "damage"})
 
+    h = [Froggy, Froggladior]
+    e = [Sludge, Frogglar]
+
+
 class Battle:
-    def __init__(self, heros , enemies):
-        self.heros = heros
+    def __init__(self, watchers, enemies):
+        self.heros = watchers
         self.enemies = enemies
 
     def battle(self):
@@ -26,16 +28,18 @@ class Battle:
         def battle_over(over_var, hero_list, enemy_list):
             # Checking that all heros are dead:
             if all(hero.permissions == "dead" for hero in heroes_list):
-                print("You Lose. All Heros Are Dead")
+                print("You Lose. All Watchers Are Dead")
                 over_var = True
-                return "You Lose."
+                return True
             elif all(enemy.permissions == "dead" for enemy in enemy_list):
                 over_var = True
                 print("You Win!")
-                return "You Win."
+                return True
             else:
-                return
+                return False
 
+        def move_change(move):
+            return 1
 
         # Making Sure that All Lists are full.
         if len(self.heros) > 5:
@@ -48,14 +52,14 @@ class Battle:
                 else:
                     hero.decision = ""
                     hero.enemy_decision: str = ""
-                    while hero.decision != "":
+                    while hero.decision == "":
                         enemy_number = 0
                         print(f"Choose one action for {hero.name}:")
                         print("\n")
                         wait(1)
                         print("(1): Base Attack")
                         wait(0.5)
-                        print("(2): Green Skill")
+                        print("(2): Rank 2 Skill")
                         wait(0.5)
                         print("(3): Pass")
                         wait(0.5)
@@ -69,34 +73,46 @@ class Battle:
                                     print(f"({index}): {enemy.name}")
                                 else:
                                     continue
-                            while hero.enemy_decision != "":
+                            hero.enemy_decision = input("Choice: ")
+                            moved = 0
+                            while moved == 0:
                                 if hero.enemy_decision == "1" and not (
                                         int(hero.enemy_decision) > len(self.enemies)) and not (
-                                        enemy.health <= 0):
-                                    hero.green_skill(self.enemies[0])
+                                        self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                    hero.base_attack(self.enemies[0])
+                                    moved += 1
+                                    break
                                 elif hero.enemy_decision == "2" and not (
                                         int(hero.enemy_decision) > len(self.enemies)) and not (
-                                        enemy.health <= 0):
-                                    hero.green_skill(self.enemies[1])
+                                        self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                    hero.base_attack(self.enemies[1])
+                                    moved += 1
+                                    break
                                 elif hero.enemy_decision == "3" and not (
                                         int(hero.enemy_decision) > len(self.enemies)) and not (
-                                        enemy.health <= 0):
-                                    hero.green_skill(self.enemies[2])
+                                        self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                    hero.base_attack(self.enemies[2])
+                                    moved += 1
+                                    break
                                 elif hero.enemy_decision == "4" and not (
-                                        int(hero.enemy_decision) > len(self.enemies) and not (enemy.health <= 0)):
-                                    hero.green_skill(self.enemies[3])
+                                        int(hero.enemy_decision) > len(self.enemies) and not (
+                                        self.enemies[int(hero.enemy_decision) - 1].health <= 0)):
+                                    hero.base_attack(self.enemies[3])
+                                    moved += 1
+                                    break
                                 elif hero.enemy_decision == "5" and not (
                                         int(hero.enemy_decision) > len(self.enemies)) and not (
-                                        enemy.health <= 0):
-                                    hero.green_skill(self.enemies[4])
+                                        self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                    hero.base_attack(self.enemies[4])
+                                    moved += 1
+                                    break
                                 else:
                                     hero.enemy_decision = ""
                                     print("Retry. Unknown String Typed")
+                                    hero.enemy_decision = input("Choice: ")
                                     wait(1)
-                            hero.enemy_decision = ""
-                            hero.decision = ""
 
-                            # BASE ATTACK
+                            # Green Skill
                         elif hero.decision == "2":
                             type = hero.green_skill_info["type"]
                             if type == "damage":
@@ -107,41 +123,58 @@ class Battle:
                                     else:
                                         continue
                                 hero.enemy_decision = input("Choose: ")
-                                while hero.enemy_decision != "":
+
+                                moved = 0
+                                while moved == 0:
                                     if hero.enemy_decision == "1" and not (
-                                            int(hero.enemy_decision) > len(self.enemies)) and not (enemy.health <= 0):
-                                        hero.green_skill(self.enemies[0])
+                                            int(hero.enemy_decision) > len(self.enemies)) and not (
+                                            self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                        hero.rank_2_skill(self.enemies[0])
+                                        moved += 1
+                                        break
                                     elif hero.enemy_decision == "2" and not (
-                                            int(hero.enemy_decision) > len(self.enemies)) and not (enemy.health <= 0):
-                                        hero.green_skill(self.enemies[1])
+                                            int(hero.enemy_decision) > len(self.enemies)) and not (
+                                            self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                        hero.rank_2_skill(self.enemies[1])
+                                        moved += 1
+                                        break
                                     elif hero.enemy_decision == "3" and not (
-                                            int(hero.enemy_decision) > len(self.enemies)) and not (enemy.health <= 0):
-                                        hero.green_skill(self.enemies[2])
+                                            int(hero.enemy_decision) > len(self.enemies)) and not (
+                                            self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                        hero.rank_2_skill(self.enemies[2])
+                                        moved += 1
+                                        break
                                     elif hero.enemy_decision == "4" and not (
-                                            int(hero.enemy_decision) > len(self.enemies) and not (enemy.health <= 0)):
-                                        hero.green_skill(self.enemies[3])
+                                            int(hero.enemy_decision) > len(self.enemies) and not (
+                                            self.enemies[int(hero.enemy_decision) - 1].health <= 0)):
+                                        hero.rank_2_skill(self.enemies[3])
+                                        moved += 1
+                                        break
                                     elif hero.enemy_decision == "5" and not (
-                                            int(hero.enemy_decision) > len(self.enemies)) and not (enemy.health <= 0):
-                                        hero.green_skill(self.enemies[4])
+                                            int(hero.enemy_decision) > len(self.enemies)) and not (
+                                            self.enemies[int(hero.enemy_decision) - 1].health <= 0):
+                                        hero.rank_2_skill(self.enemies[4])
+                                        moved += 1
+                                        break
                                     else:
                                         hero.enemy_decision = ""
-                                        print("retry. unknown string typed")
+                                        print("Retry. Unknown String Typed")
+                                        hero.enemy_decision = input("Choice: ")
                                         wait(1)
-                                hero.enemy_decision = ""
-                                hero.decision = ""
+
                             elif type == "self heal":
-                                hero.green_skill(enemy)
+                                hero.rank_2_skill(enemy)
                                 hero.enemy_decision = ""
                                 hero.decision = ""
                         elif hero.decision == "3":
                             print("Passing to the next hero. . .")
                             wait(1)
-                            hero.enemy_decision = ""
-                            hero.decision = ""
                             break
                         else:
                             hero.decision = ""
                             print("Try again")
+                    hero.enemy_decision = ""
+                    hero.decision = ""
                 battle_over(over, self.heros, self.enemies)
             for enemy in self.enemies:
                 if enemy.health <= 0:
@@ -156,10 +189,18 @@ class Battle:
         for enemy in self.enemies:
             enemy.reset()
 
-def battle(heros, enemy_set1, enemy_set2, enemy_set3):
+
+def standard_battle(heros, enemy_set1, enemy_set2, enemy_set3):
     battle = Battle(heros, enemy_set1)
     battle.battle()
     battle.enemies = enemy_set2
     battle.battle()
     battle.enemies = enemy_set3
     battle.battle()
+    battle.reset()
+
+
+def sing_round_battle(heros, enemies):
+    battle = Battle(heros, enemies)
+    battle.battle()
+    battle.reset()
