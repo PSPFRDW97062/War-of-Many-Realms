@@ -5,42 +5,33 @@ from AI import AI
 DEBUG = True  # Don't mess with this
 if DEBUG:
     Froggy = Hero("Froggy", 1000, 250, level=1, base_attack_stat=1,
-                  rank_2_skill_info={"name": "Whirlpool", "type": "damage"})
+                  rank_2_skill_info={"name": "Whirlpool", "type": "sing. damage"})
 
     Sludge = Hero("Sludge", 1000, 250, level=1, base_attack_stat=2,
                   rank_2_skill_info={"name": "Flower of the Earth", "type": "self heal"})
-    Froggladior = Hero("Froggladior",  1500, 350, level=1,
+    Froggladior = Hero("Froggladior", 1500, 350, level=1,
                        rank_2_skill_info={"name": "Downfall", "type": "self heal"})
     Frogglar = Hero("asdf", 1500, 250, level=1, rank_2_skill_info={"name": "Downfall", "type": "damage"})
 
-    ldge = Hero("ddge", 500, 150, level=1, base_attack_stat=2,
-                 rank_2_skill_info={"name": "Flower of the Earth", "type": "self heal"})
-    ludge = Hero("sge", 500, 150, level=1, base_attack_stat=2,
+    ldge = Hero("ddge", 50, 150, level=1, base_attack_stat=2,
+                rank_2_skill_info={"name": "Flower of the Earth", "type": "self heal"})
+    ludge = Hero("sge", 50, 150, level=1, base_attack_stat=2,
                  rank_2_skill_info={"name": "Flower of the Earth", "type": "self heal"})
     h = [Froggy, Froggladior]
     we = [ldge, ludge]
     e = [Sludge, Frogglar]
 
 
-def battle_over_class(hero_list, enemy_list,over_var = None, round_num = None):
-    # Checking that all heros are dead:
-    if over_var != None:
-        if all(hero.permissions == "dead" for hero in heroes_list):
-            over_var += 1
-        elif all(enemy.permissions == "dead" for enemy in enemy_list):
-            over_var += 1
-        else:
-            return False
+def battle_over_class(hero_list, enemy_list):
+    if all(hero.permissions == "dead" for hero in hero_list):
+        return 1
+    elif all(enemy.permissions == "dead" for enemy in enemy_list):
+        return 1
     else:
-        if all(hero.permissions == "dead" for hero in heroes_list):
-            print("You Lose!")
+        return 0
 
-        elif all(enemy.permissions == "dead" for enemy in enemy_list):
-            print(f"You win round {round_num}")
-        else:
-            return False
 
-def full_battle_over_check(enemy_list1 = None, enemy_list2 = None, enemy_list3 = None):
+def full_battle_over_check(enemy_list1=None, enemy_list2=None, enemy_list3=None):
     l = [enemy_list for enemy_list in [enemy_list1, enemy_list2, enemy_list3] is not None]
     t = []
     for li in l:
@@ -48,7 +39,10 @@ def full_battle_over_check(enemy_list1 = None, enemy_list2 = None, enemy_list3 =
             t.append(True)
         else:
             t.append(False)
-            
+    if all(t):
+        print("You won!")
+    else:
+        print("You lose.")
 
 
 class Battle:
@@ -57,16 +51,14 @@ class Battle:
         self.enemies = enemies
 
     def battle(self):
-        over = 0
+        over = False
         MAIN_AI = AI(self.watchers, self.watchers[1])
-
-
 
         # Making Sure that All Lists are not over 5
         if len(self.watchers) > 5:
             print("Go to feedback and report \"Battle Failed\"")
 
-        while over ==0:
+        while over == 0:
             for hero in self.watchers:
                 if hero.health <= 0:
                     continue
@@ -111,7 +103,7 @@ class Battle:
                         elif hero.decision == "2":
                             type = hero.green_skill_info["type"]
                             if hero.energy >= 20:
-                                if type == "damage":
+                                if type == "sing. damage":
                                     for index, enemy in enumerate(self.enemies):
                                         if enemy is not None and not (enemy.health <= 0):
                                             enemy_number += 1
@@ -123,7 +115,7 @@ class Battle:
                                         if hero.enemy_decision.isdigit() and int(hero.enemy_decision) <= len(
                                                 self.enemies) and not self.enemies[
                                                                           int(hero.enemy_decision) - 1].health <= 0:
-                                            hero.base_attack(self.enemies[int(hero.enemy_decision) - 1])
+                                            hero.rank_2_skill(self.enemies[int(hero.enemy_decision) - 1])
                                             moved += 1
                                         else:
                                             hero.enemy_decision = ""
@@ -149,14 +141,19 @@ class Battle:
                             print("Try again")
                     hero.enemy_decision = ""
                     hero.decision = ""
-                over = battle_over_class(over, self.watchers, self.enemies)
+                i = battle_over_class(self.watchers, self.enemies)
+                over +=i
+                if over != 0:
+                    break
+                else:
+                    return
             for enemy in self.enemies:
                 if enemy.health <= 0:
                     continue
                 else:
                     MAIN_AI.hero = enemy
                     MAIN_AI.decide()
-                    over = battle_over_class(over, self.watchers, self.enemies)
+                    over = battle_over_class(self.watchers, self.enemies)
 
     def reset(self):
         for hero in self.watchers:
@@ -174,6 +171,7 @@ def standard_battle(heros, enemy_set1, enemy_set2, enemy_set3):
     battle.battle()
     battle.reset()
     full_battle_over_check(enemy_set1, enemy_set2, enemy_set3)
+
 
 def sing_round_battle(heros, enemies):
     battle = Battle(heros, enemies)
