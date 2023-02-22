@@ -23,13 +23,22 @@ if DEBUG:
 
 
 def battle_over_class(hero_list, enemy_list,over_var = None, round_num = None):
-    if all(hero.permissions == "dead" for hero in heroes_list):
-        return True
-    elif all(enemy.permissions == "dead" for enemy in enemy_list):
-        return True
+    # Checking that all heros are dead:
+    if over_var != None:
+        if all(hero.permissions == "dead" for hero in heroes_list):
+            over_var += 1
+        elif all(enemy.permissions == "dead" for enemy in enemy_list):
+            over_var += 1
+        else:
+            return False
     else:
-        return False
+        if all(hero.permissions == "dead" for hero in heroes_list):
+            print("You Lose!")
 
+        elif all(enemy.permissions == "dead" for enemy in enemy_list):
+            print(f"You win round {round_num}")
+        else:
+            return False
 
 def full_battle_over_check(enemy_list1 = None, enemy_list2 = None, enemy_list3 = None):
     l = [enemy_list for enemy_list in [enemy_list1, enemy_list2, enemy_list3] is not None]
@@ -39,11 +48,7 @@ def full_battle_over_check(enemy_list1 = None, enemy_list2 = None, enemy_list3 =
             t.append(True)
         else:
             t.append(False)
-    if all(t):
-        print("You won!")
-    else:
-        print("You lose." )
-
+            
 
 
 class Battle:
@@ -52,7 +57,7 @@ class Battle:
         self.enemies = enemies
 
     def battle(self):
-        over = False
+        over = 0
         MAIN_AI = AI(self.watchers, self.watchers[1])
 
 
@@ -61,7 +66,7 @@ class Battle:
         if len(self.watchers) > 5:
             print("Go to feedback and report \"Battle Failed\"")
 
-        while over ==False:
+        while over ==0:
             for hero in self.watchers:
                 if hero.health <= 0:
                     continue
@@ -118,7 +123,7 @@ class Battle:
                                         if hero.enemy_decision.isdigit() and int(hero.enemy_decision) <= len(
                                                 self.enemies) and not self.enemies[
                                                                           int(hero.enemy_decision) - 1].health <= 0:
-                                            hero.rank_2_skill(self.enemies[int(hero.enemy_decision) - 1])
+                                            hero.base_attack(self.enemies[int(hero.enemy_decision) - 1])
                                             moved += 1
                                         else:
                                             hero.enemy_decision = ""
