@@ -69,7 +69,7 @@ class Hero:
             self.energy -= 150
             if self.rank_1_skill_info["type"] == "all damage":
                 print(f"{self.name} used their gray skill {self.rank_1_skill_info['name']} on the enemies!")
-                if enemies != None:
+                if enemies is not None:
                     for e in enemies:
                         if (e.health - (self.attack + 500)) <= 0:
                             print(f"{e.name} is dead.")
@@ -82,7 +82,7 @@ class Hero:
                     print("ERROR")
             elif self.rank_1_skill_info["type"] == "all heal":
                 print(f"{self.name} used their gray skill {self.rank_1_skill_info['name']} on the enemies!")
-                if allies != None:
+                if allies is not None:
                     for a in allies:
                         if (a.health + (self.attack + 500)) >= a.max_health:
                             print(f"{a.name} got healed by {self.attack + 500 - a.max_health}! {a.name} is now at " 
@@ -106,31 +106,27 @@ class Hero:
             if self.rank_2_skill_info['type'] == "sing. damage":
                 if (enemy.health - (self.attack + 300)) < 0:
                     print(
-                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt {(self.attack + 300) - enemy.health} damage to {enemy.name} \n"
+                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt "
+                        f"{(self.attack + 300) - enemy.health} damage to {enemy.name} \n"
                         f"{enemy.name} is dead.")
                     enemy.health = 0
-                    return f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt {(self.attack + 300) - enemy.health} damage to {enemy.name}. {enemy.name}'s health is {enemy.health}."
                 else:
                     enemy.health -= (self.attack + 300)
                     print(
-                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt {self.attack + 300} damage to {enemy.name} \n"
+                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt "
+                        f"{self.attack + 300} damage to {enemy.name} \n"
                         f"{enemy.name} only has {enemy.health} health left.")
-                    return f"{self.name} used their green skill {self.rank_2_skill_info['name']} and dealt {self.attack + 300} damage to {enemy.name}. {enemy.name}'s health is {enemy.health}."
-
             if self.rank_2_skill_info['type'] == "self heal":
                 if (self.health + 350) > self.max_health:
                     print(
-                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and healed themselves by {(self.health + 350) - self.max_health}. \n"
+                        f"{self.name} used their green skill {self.rank_2_skill_info['name']} and healed themselves by "
+                        f"{(self.health + 350) - self.max_health}. \n"
                         f"{self.name}'s health is now at {self.max_health}!")
                     self.health = self.max_health
-                    return f"{self.name} used their green skill {self.rank_2_skill_info['name']} and healed themselves by {(self.health + 350) - self.max_health}. \n" + \
-                        f"{self.name} is now at {self.max_health} health!"
                 else:
                     self.health += 350
                     print(f"{self.name} used their green skill {self.rank_2_skill_info['name']} and healed by 350!" +
                           f"{self.name}'s health is now at {self.health}")
-                    return f"{self.name} used their green skill {self.rank_2_skill_info['name']} and healed by 350!\n \
-                          {self.name}'s health is now at {self.health}."
         else:
             print(f"{self.name} Does Not Enough Energy")
 
